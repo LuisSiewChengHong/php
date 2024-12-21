@@ -31,7 +31,7 @@
                 $lastname = $_POST['lastname'];
                 $gender = $_POST['gender'];
                 $dateofbirth = $_POST['dateofbirth'];
-                var_dump($_POST);
+
 
 
                 $errors = [];
