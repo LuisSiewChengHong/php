@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html>
+<?php include 'menu.php';?>
 
 <head>
     <title>PDO - Create a Record - PHP CRUD Tutorial</title>
@@ -26,7 +27,7 @@
         // delete message prompt will be here
         
         // select all data
-        $query = "SELECT product_cat_id, product_cat_name,product_cat_description FROM product_cat";
+        $query = "SELECT product_cat_id, product_cat_name, product_cat_description FROM product_cat";
         $stmt = $con->prepare($query);
         $stmt->execute();
         
@@ -104,11 +105,8 @@
                         <select name = "category" id="category">
                         <?php
                         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            // extract row
-                            // this will make $row['firstname'] to just $firstname only
-                            extract($row);
-                            // creating new table row per record
-                            echo '<option value"' . $product_cat_name . '">' . $product_cat_name . '</option';
+                            extract($row);  
+                            echo '<option value="' . $product_cat_name . '">' . $product_cat_name . '</option>';
                         }
 
                         ?>
