@@ -16,10 +16,30 @@
         <div class="page-header">
             <h1>Create Product</h1>
         </div>
-
+        
         <!-- html form to create product will be here -->
         <!-- PHP insert code will be here -->
         <?php
+        // include database connection
+        include 'config/database.php';
+
+        // delete message prompt will be here
+        
+        // select all data
+        $query = "SELECT product_cat_id, product_cat_name,product_cat_description FROM product_cat";
+        $stmt = $con->prepare($query);
+        $stmt->execute();
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // extract row
+            // this will make $row['firstname'] to just $firstname only
+            extract($row);
+            // creating new table row per record
+            echo "{$product_cat_id}";
+            echo "{$product_cat_name}";
+            echo "{$product_cat_description}";
+        }
+
         if ($_POST) {
             // include database connection
             include 'config/database.php';
@@ -87,6 +107,26 @@
                 <tr>
                     <td>Description</td>
                     <td><textarea name='description' class='form-control'></textarea></td>
+                </tr>
+                <tr>
+                    <td>Product Category</td>
+                    <td><label for="category">Choose a Category:</label>
+                        <select name = "category" id="category">
+                        <?php
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            // extract row
+                            // this will make $row['firstname'] to just $firstname only
+                            extract($row);
+                            // creating new table row per record
+                            echo '<option value"' . $product_cat_name . '">' . $product_cat_name . '</option';
+                            echo "{$product_cat_id}";
+                            echo "{$product_cat_name}";
+                            echo "{$product_cat_description}";
+                        }
+
+                        ?>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>Price</td>
