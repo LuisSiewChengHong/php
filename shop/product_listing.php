@@ -12,7 +12,7 @@
     <!-- container -->
     <div class="container">
         <div class="page-header">
-            <h1>Read Products</h1>
+            <h1>Product Listings</h1>
         </div>
 
         <?php
