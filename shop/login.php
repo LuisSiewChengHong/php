@@ -81,47 +81,22 @@ if ($_POST) {
                 echo "</ul></div>";
             } else {
                 try {
-                    $query = "SELECT password, status FROM customer
-                    WHERE email = 'userinput' OR username = 'userinput'";
+                    $query = "SELECT username, password, status FROM customer
+                    WHERE username = ? LIMIT 1";
                     $stmt = $con->prepare($query);
-                    $stmt->bindParam(':email', $email);
+                    $stmt->bindParam(1, $email);
                     $stmt->execute();
 
                     $num = $stmt->rowCount();
-
-                    /*if ($email_error != null) {
-                        ?>
-                        <style>
-                            .email-error {
-                                display: block
-                            }
-                        </style> <?php
-                    }
-                    if ($password_error != null) {
-                        ?>
-                        <style>
-                            .password-error {
-                                display: block
-                            }
-                        </style> <?php
-                    }
-                    if ($password_error != null) {
-                        ?>
-                        <style>
-                            .password-error {
-                                display: block
-                            }
-                        </style>
-                        <?php
-                    }*/
 
                     if ($num > 0) {
                         $row = $stmt->fetch(PDO::FETCH_ASSOC);
                         $stored_password = $row['password'];
                         $status = $row['status'];
-
-                        if (password_verify($password, $stored_password)) {
-                            if ($status == 'active') {
+                        echo $stored_password . "m";
+                        echo $status . "m";
+                        if ($password == $stored_password) {
+                            if ($status == 1) {
                                 echo "<p style='color:green;'>Login successful. Welcome!</p>";
                                 header("location: customer_details.php");
                             } else {
