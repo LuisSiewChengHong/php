@@ -41,7 +41,7 @@
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
     <main class="form-signin w-100 m-auto">
         <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
-            <img class="mb-4" src="brandLogo.webp" alt="" width="100" height="80">
+            <img class="mb-4" src="brandLogo.webp" alt="" width="150" height="120">
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
             <div class="form-floating">
@@ -58,25 +58,65 @@
             <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
         </form>
     </main>
+
+    <div id="Emailmsg">
+        <h3></h3>
+    </div>
 </body>
 
 </html>
 
+
 <?php
 include 'config/database.php';
-?>
 
-
-
-<?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = isset($_POST['email']) ? $_POST['email'] : '';
-    $username = isset($_POST['username']) ? $_POST['username'] : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $errors = [];
 
-    if (empty($email) && empty($username)) {
-        echo "<p style='color:red;'>Please enter either an email or a username.</p>";
+    if (empty($email)) {
+        $errors[] = "Email is required.";
+    }
+    if (empty($password)) {
+        $errors[] = "Password is required.";
+    }
+
+    if (!empty($errors)) {
+        echo "<div class='alert alert-danger'><ul>";
+        foreach ($errors as $error) {
+            echo "<li>{$error}</li>";
+        }
+        echo "</ul></div>";
     } else {
-        echo "<p style='color:green;'>Form submitted successfully.</p>";
+        try {
+            $query = "SELECT password FROM customer WHERE email = :email";
+            $stmt = $con->prepare($query);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+
+            $num = $stmt->rowCount();
+
+            if ($num > 0) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $stored_password = $row['password'];
+                $status = $row['status'];
+
+                if (password_verify($password, $stored_password)) {
+                    if ($status == 'active') {
+                        echo "<p style='color:green;'>Login successful. Welcome!</p>";
+                    } else {
+                        echo "<p style='color:orange;'>Your account is inactive. Please contact support.</p>";
+                    }
+                } else {
+                    echo "<p style='color:red;'>Incorrect password. Please try again.</p>";
+                }
+            } else {
+                echo "<p style='color:red;'>No account found with that email.</p>";
+            }
+        } catch (PDOException $exception) {
+            die('ERROR: ' . $exception->getMessage());
+        }
     }
 }
 ?>
