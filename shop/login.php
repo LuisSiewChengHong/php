@@ -58,10 +58,6 @@
             <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
         </form>
     </main>
-
-    <div id="Emailmsg">
-        <h3></h3>
-    </div>
 </body>
 
 </html>
@@ -97,6 +93,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $num = $stmt->rowCount();
 
+            /*if ($email_error != null) {
+                ?>
+                <style>
+                    .email-error {
+                        display: block
+                    }
+                </style> <?php
+            }
+            if ($password_error != null) {
+                ?>
+                <style>
+                    .password-error {
+                        display: block
+                    }
+                </style> <?php
+            }
+            if ($password_error != null) {
+                ?>
+                <style>
+                    .password-error {
+                        display: block
+                    }
+                </style>
+                <?php
+            }*/
+
             if ($num > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $stored_password = $row['password'];
@@ -105,6 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (password_verify($password, $stored_password)) {
                     if ($status == 'active') {
                         echo "<p style='color:green;'>Login successful. Welcome!</p>";
+                        header("location: customer_details.php");
                     } else {
                         echo "<p style='color:orange;'>Your account is inactive. Please contact support.</p>";
                     }
@@ -113,6 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             } else {
                 echo "<p style='color:red;'>No account found with that email.</p>";
+
             }
         } catch (PDOException $exception) {
             die('ERROR: ' . $exception->getMessage());
