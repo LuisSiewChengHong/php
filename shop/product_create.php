@@ -1,6 +1,14 @@
 <!DOCTYPE HTML>
 <html>
-<?php include 'menu.php';?>
+<?php include 'menu.php';
+// Check if the user is logged in
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    header('Location: login.php'); // Redirect to login page if not logged in
+    exit();
+}
+session_start();
+?>
+
 
 <head>
     <title>PDO - Create a Record - PHP CRUD Tutorial</title>
@@ -17,7 +25,7 @@
         <div class="page-header">
             <h1>Create Product</h1>
         </div>
-        
+
         <!-- html form to create product will be here -->
         <!-- PHP insert code will be here -->
         <?php
@@ -30,7 +38,7 @@
         $query = "SELECT product_cat_id, product_cat_name, product_cat_description FROM product_cat";
         $stmt = $con->prepare($query);
         $stmt->execute();
-        
+
         if ($_POST) {
             // include database connection
             include 'config/database.php';
@@ -102,14 +110,14 @@
                 <tr>
                     <td>Product Category</td>
                     <td><label for="category">Choose a Category:</label>
-                        <select name = "category" id="category">
-                        <?php
-                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            extract($row);  
-                            echo '<option value="' . $product_cat_name . '">' . $product_cat_name . '</option>';
-                        }
+                        <select name="category" id="category">
+                            <?php
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                extract($row);
+                                echo '<option value="' . $product_cat_name . '">' . $product_cat_name . '</option>';
+                            }
 
-                        ?>
+                            ?>
                         </select>
                     </td>
                 </tr>

@@ -1,6 +1,13 @@
 <!DOCTYPE HTML>
 <html>
-<?php include 'menu.php';?>
+<?php include 'menu.php';
+// Check if the user is logged in
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    header('Location: login.php'); // Redirect to login page if not logged in
+    exit();
+}
+session_start();
+?>
 
 <head>
     <title>PDO - Create a Record - PHP CRUD Tutorial</title>
@@ -22,7 +29,7 @@
         // delete message prompt will be here
         
         // select all data
-
+        
 
         $query = "SELECT id, name, description, price, product_cat_name FROM products
         INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id ORDER BY id DESC";

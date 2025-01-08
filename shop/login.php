@@ -2,6 +2,7 @@
 <html>
 
 <?php
+session_start();
 include 'config/database.php';
 
 if ($_POST) {
@@ -97,7 +98,9 @@ if ($_POST) {
                         echo $status . "m";
                         if ($password == $stored_password) {
                             if ($status == 1) {
-                                echo "<p style='color:green;'>Login successful. Welcome!</p>";
+                                $_SESSION['user_id'] = 1; // Example user ID
+                                $_SESSION['username'] = $username;
+                                $_SESSION['is_logged_in'] = true; // Login flag
                                 header("location: customer_details.php");
                             } else {
                                 echo "<p style='color:orange;'>Your account is inactive. Please contact support.</p>";
