@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html>
+<?php include 'menu.php'; ?>
 
 <head>
     <title>PDO - Read One Record - PHP CRUD Tutorial</title>
@@ -48,7 +49,7 @@
             $registration = $row['registration_date'];
             $account_status = $row['account_status'];
         }
-// show error
+        // show error
         catch (PDOException $exception) {
             die('ERROR: ' . $exception->getMessage());
         }
@@ -62,31 +63,31 @@
         <table class='table table-hover table-responsive table-bordered'>
             <tr>
                 <td>username</td>
-                <td><?php echo $name;  ?></td>
+                <td><?php echo $name; ?></td>
             </tr>
             <tr>
                 <td>firstname</td>
-                <td><?php echo $firstname;  ?></td>
+                <td><?php echo $firstname; ?></td>
             </tr>
             <tr>
                 <td>lastname</td>
-                <td><?php echo $lastname;  ?></td>
+                <td><?php echo $lastname; ?></td>
             </tr>
             <tr>
                 <td>gender</td>
-                <td><?php echo $gender;  ?></td>
+                <td><?php echo $gender; ?></td>
             </tr>
             <tr>
                 <td>date_of_birth</td>
-                <td><?php echo $date_of_birth;  ?></td>
+                <td><?php echo $date_of_birth; ?></td>
             </tr>
             <tr>
                 <td>registration</td>
-                <td><?php echo $registration;  ?></td>
+                <td><?php echo $registration; ?></td>
             </tr>
             <tr>
                 <td>account_status</td>
-                <td><?php echo $account_status;  ?></td>
+                <td><?php echo $account_status; ?></td>
             </tr>
             <tr>
                 <td></td>
