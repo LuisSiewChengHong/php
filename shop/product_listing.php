@@ -1,12 +1,8 @@
 <!DOCTYPE HTML>
 <html>
-<?php include 'menu.php';
-// Check if the user is logged in
-if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    header('Location: login.php'); // Redirect to login page if not logged in
-    exit();
-}
-session_start();
+<?php
+include 'menu.php';
+include 'validation.php';
 ?>
 
 <head>
@@ -31,7 +27,7 @@ session_start();
         // select all data
         
 
-        $query = "SELECT id, name, description, price, product_cat_name FROM products
+        $query = "SELECT id, name, description, price, product_cat FROM products
         INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id ORDER BY id DESC";
         $stmt = $con->prepare($query);
         $stmt->execute();
@@ -40,7 +36,7 @@ session_start();
         $num = $stmt->rowCount();
 
         // link to create record form
-        echo "<a href='create.php' class='btn btn-primary m-b-1em'>Create New Product</a>";
+        echo "<a href='product_create.php' class='btn btn-primary m-b-1em'>Create New Product</a>";
 
         //check if more than 0 record found
         if ($num > 0) {
@@ -67,7 +63,7 @@ session_start();
                 echo "<td>{$id}</td>";
                 echo "<td>{$name}</td>";
                 echo "<td>{$description}</td>";
-                echo "<td>{$product_cat_name}</td>";
+                echo "<td>{$product_cat}</td>";
                 echo "<td>{$price}</td>";
                 echo "<td>";
                 // read one record
