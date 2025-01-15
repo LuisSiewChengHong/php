@@ -42,6 +42,9 @@ include 'validation.php';
                 $name = $_POST['name'];
                 $description = $_POST['description'];
                 $price = $_POST['price'];
+                $manufacture_date = $_POST['manufacture_date'];
+                $expired_date = $_POST['expired_date'];
+
                 $errors = [];
 
                 if (empty($name)) {
@@ -52,6 +55,17 @@ include 'validation.php';
                 }
                 if (empty($price)) {
                     $errors[] = "Price is required.";
+                }
+                if (isset($_POST['product_cat']) && !empty($_POST['product_cat'])) {
+                    $product_cat = $_POST['product_cat'];
+                } else {
+                    $errors[] = "Product Category is required.";
+                }
+                if (empty($manufacture_date)) {
+                    $errors[] = "Manufacture Date is required.";
+                }
+                if (empty($expired_date)) {
+                    $errors[] = "Expired Date is required.";
                 }
 
                 // If there are errors, display them
@@ -65,13 +79,16 @@ include 'validation.php';
 
 
                     // insert query
-                    $query = "INSERT INTO products SET name=:name, description=:description, price=:price, created=:created";
+                    $query = "INSERT INTO products SET name=:name, description=:description, price=:price, product_cat=:product_cat, manufacture_date=:manufacture_date, expired_date=:expired_date, created=:created";
                     // prepare query for execution
                     $stmt = $con->prepare($query);
                     // bind the parameters
                     $stmt->bindParam(':name', $name);
                     $stmt->bindParam(':description', $description);
                     $stmt->bindParam(':price', $price);
+                    $stmt->bindParam(':product_cat', $product_cat);
+                    $stmt->bindParam(':manufacture_date', $manufacture_date);
+                    $stmt->bindParam(':expired_date', $expired_date);
                     // specify when this record was inserted to the database
                     $created = date('Y-m-d H:i:s');
                     $stmt->bindParam(':created', $created);
@@ -105,11 +122,11 @@ include 'validation.php';
                 <tr>
                     <td>Product Category</td>
                     <td><label for="category">Choose a Category:</label>
-                        <select name="category" id="category">
+                        <select name="product_cat" id="category">
                             <?php
                             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 extract($row);
-                                echo '<option value="' . $product_cat_name . '">' . $product_cat_name . '</option>';
+                                echo '<option value="' . $product_cat_id . '">' . $product_cat_name . '</option>';
                             }
 
                             ?>
@@ -121,10 +138,18 @@ include 'validation.php';
                     <td><input type='text' name='price' class='form-control' /></td>
                 </tr>
                 <tr>
+                    <td>Manufacture Date</td>
+                    <td><input type='date' name='manufacture_date' class='form-control' /></td>
+                </tr>
+                <tr>
+                    <td>Expiratory Date</td>
+                    <td><input type='date' name='expired_date' class='form-control' /></td>
+                </tr>
+                <tr>
                     <td></td>
                     <td>
                         <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                        <a href='product_listing.php' class='btn btn-danger'>Back to read products</a>
                     </td>
                 </tr>
             </table>

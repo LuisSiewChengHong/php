@@ -27,8 +27,8 @@ include 'validation.php';
         // select all data
         
 
-        $query = "SELECT id, name, description, price, product_cat FROM products
-        INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id ORDER BY id DESC";
+        $query = "SELECT id, name, description, price, product_cat_name, created, modified, manufacture_date, expired_date FROM products
+        INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id ORDER BY id ASC";
         $stmt = $con->prepare($query);
         $stmt->execute();
 
@@ -50,7 +50,8 @@ include 'validation.php';
             echo "<th>Description</th>";
             echo "<th>Category";
             echo "<th>Price</th>";
-            echo "<th>Action</th>";
+            echo "<th>Manufacture Date</th>";
+            echo "<th>Expiratory Date</th>";
             echo "</tr>";
 
             // retrieve our table contents
@@ -63,14 +64,16 @@ include 'validation.php';
                 echo "<td>{$id}</td>";
                 echo "<td>{$name}</td>";
                 echo "<td>{$description}</td>";
-                echo "<td>{$product_cat}</td>";
+                echo "<td>{$product_cat_name}</td>";
                 echo "<td>{$price}</td>";
+                echo "<td>{$manufacture_date}</td>";
+                echo "<td>{$expired_date}</td>";
                 echo "<td>";
                 // read one record
-                echo "<a href='read_one.php?id={$id}' class='btn btn-info m-r-1em'>Read</a>";
+                echo "<a href='product_details.php?id={$id}' class='btn btn-info m-r-1em'>Read</a>";
 
                 // we will use this links on next part of this post
-                echo "<a href='update.php?id={$id}' class='btn btn-primary m-r-1em'>Edit</a>";
+                echo "<a href='product_update.php?id={$id}' class='btn btn-primary m-r-1em'>Edit</a>";
 
                 // we will use this links on next part of this post
                 echo "<a href='#' onclick='delete_user({$id});'  class='btn btn-danger'>Delete</a>";

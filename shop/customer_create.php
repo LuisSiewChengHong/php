@@ -71,8 +71,7 @@ include 'validation.php';
 
                     // insert query
                     $query = "INSERT INTO cus SET username=:username, password=:password, firstname=:firstname, lastname=:lastname, gender=:gender, dateofbirth=:dateofbirth";
-                    //$query = "INSERT INTO cus ('name') VALUES ('luis')";
-        
+
                     // prepare query for execution
                     $stmt = $con->prepare($query);
 
