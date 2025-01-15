@@ -16,7 +16,40 @@ if ($_POST) {
     if (empty($password)) {
         $errors[] = "Password is required.";
     }
+    if (empty($errors)) {
 
+        try {
+            $query = "SELECT username, password, stat FROM customer
+            WHERE username = ? LIMIT 1";
+            $stmt = $con->prepare($query);
+            $stmt->bindParam(1, $username);
+            $stmt->execute();
+            $num = $stmt->rowCount();
+            if ($num == 1) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $stored_password = $row['password'];
+                $status = $row['stat'];
+                echo $stored_password . "m";
+                echo $status . "m";
+                if ($password == $stored_password) {
+                    if ($status == 1) {
+                        $_SESSION['user_id'] = 1;
+                        $_SESSION['username'] = $username;
+                        $_SESSION['is_logged_in'] = true;
+                        header("location: product_details.php");
+                    } else {
+                        echo "<p style='color:orange;'>Your account is inactive. Please contact support.</p>";
+                    }
+                } else {
+                    echo "<p style='color:red;'>Incorrect password. Please try again.</p>";
+                }
+            } else {
+                echo "No user found";
+            }
+        } catch (PDOException $exception) {
+            die('ERROR: ' . $exception->getMessage());
+        }
+    }
 }
 ?>
 
@@ -80,40 +113,6 @@ if ($_POST) {
                     echo "<li>{$error}</li>";
                 }
                 echo "</ul></div>";
-            } else {
-                try {
-                    $query = "SELECT username, password, status FROM customer
-                    WHERE username = ? LIMIT 1";
-                    $stmt = $con->prepare($query);
-                    $stmt->bindParam(1, $username);
-                    $stmt->execute();
-
-                    $num = $stmt->rowCount();
-
-                    if ($num > 0) {
-                        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                        $stored_password = $row['password'];
-                        $status = $row['status'];
-                        echo $stored_password . "m";
-                        echo $status . "m";
-                        if ($password == $stored_password) {
-                            if ($status == 1) {
-                                $_SESSION['user_id'] = 1;
-                                $_SESSION['username'] = $username;
-                                $_SESSION['is_logged_in'] = true;
-                                header("location: product_details.php");
-                            } else {
-                                echo "<p style='color:orange;'>Your account is inactive. Please contact support.</p>";
-                            }
-                        } else {
-                            echo "<p style='color:red;'>Incorrect password. Please try again.</p>";
-                        }
-                    } else {
-                        echo "<p style='color:red;'>No account found with that email.</p>";
-                    }
-                } catch (PDOException $exception) {
-                    die('ERROR: ' . $exception->getMessage());
-                }
             }
             ?>
 
