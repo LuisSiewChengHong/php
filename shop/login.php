@@ -6,12 +6,12 @@ session_start();
 include 'config/database.php';
 
 if ($_POST) {
-    $email = $_POST['email'];
+    $username = $_POST['username'];
     $password = $_POST['password'];
     $errors = [];
 
-    if (empty($email)) {
-        $errors[] = "Email is required.";
+    if (empty($username)) {
+        $errors[] = "Email/Username is required.";
     }
     if (empty($password)) {
         $errors[] = "Password is required.";
@@ -64,8 +64,8 @@ if ($_POST) {
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
             <div class="form-floating">
-                <input type="text" class="form-control" id="email" name="email" placeholder="name@example.com">
-                <label for="email">Email/Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                <label for="username">Email/Username</label>
             </div>
             <div class="form-floating">
                 <input type="password" class="form-control" id="floatingPassword" name="password"
@@ -85,7 +85,7 @@ if ($_POST) {
                     $query = "SELECT username, password, status FROM customer
                     WHERE username = ? LIMIT 1";
                     $stmt = $con->prepare($query);
-                    $stmt->bindParam(1, $email);
+                    $stmt->bindParam(1, $username);
                     $stmt->execute();
 
                     $num = $stmt->rowCount();
@@ -98,10 +98,10 @@ if ($_POST) {
                         echo $status . "m";
                         if ($password == $stored_password) {
                             if ($status == 1) {
-                                $_SESSION['user_id'] = 1; // Example user ID
+                                $_SESSION['user_id'] = 1;
                                 $_SESSION['username'] = $username;
-                                $_SESSION['is_logged_in'] = true; // Login flag
-                                header("location: customer_details.php");
+                                $_SESSION['is_logged_in'] = true;
+                                header("location: product_details.php");
                             } else {
                                 echo "<p style='color:orange;'>Your account is inactive. Please contact support.</p>";
                             }
