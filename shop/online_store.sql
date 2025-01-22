@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jan 22, 2025 at 04:41 AM
+-- Generation Time: Jan 22, 2025 at 04:51 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -30,7 +30,10 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `customer`;
 CREATE TABLE IF NOT EXISTS `customer` (
   `username` varchar(128) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
   `password` int NOT NULL,
+  `registration_date` date NOT NULL,
   `stat` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`username`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -39,8 +42,8 @@ CREATE TABLE IF NOT EXISTS `customer` (
 -- Dumping data for table `customer`
 --
 
-INSERT INTO `customer` (`username`, `password`, `stat`) VALUES
-('luis', 1234, 1);
+INSERT INTO `customer` (`username`, `first_name`, `last_name`, `password`, `registration_date`, `stat`) VALUES
+('luis', '', '', 1234, '0000-00-00', 1);
 
 -- --------------------------------------------------------
 
