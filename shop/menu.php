@@ -18,6 +18,12 @@
         <li class="nav-item">
           <a class="nav-link" href="product_listing.php">Product Listing</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="customer_create.php">Customer Create</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="customer_listing.php">Customer Listing</a>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Dropdown

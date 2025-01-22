@@ -25,7 +25,7 @@ include 'validation.php';
         // delete message prompt will be here
         
         // select all data
-        $query = "SELECT id, name, password, firstname, lastname, gender, dateofbirth, registration_date, account_status FROM products ORDER BY id DESC";
+        $query = "SELECT username, password, first_name, last_name, gender, dateofbirth, registration_date, stat FROM customer ORDER BY username DESC";
         $stmt = $con->prepare($query);
         $stmt->execute();
 
@@ -33,7 +33,7 @@ include 'validation.php';
         $num = $stmt->rowCount();
 
         // link to create record form
-        echo "<a href='create.php' class='btn btn-primary m-b-1em'>Create New Product</a>";
+        echo "<a href='customer_create.php' class='btn btn-primary m-b-1em'>Create New Product</a>";
 
         //check if more than 0 record found
         if ($num > 0) {
@@ -47,9 +47,8 @@ include 'validation.php';
             echo "<th>First Name</th>";
             echo "<th>Last Name</th>";
             echo "<th>Gender</th>";
-            echo "<th>Date of Birth</th>";
+            echo "<th>Date Of Birth</th>";
             echo "<th>Registration Date/Time</th>";
-            echo "<th>Account Status</th>";
             echo "</tr>";
 
             // retrieve our table contents
@@ -60,16 +59,18 @@ include 'validation.php';
                 // creating new table row per record
                 echo "<tr>";
                 echo "<td>{$username}</td>";
-                echo "<td>{$firstname}</td>";
-                echo "<td>{$lastname}</td>";
+                echo "<td>{$password}</td>";
+                echo "<td>{$first_name}</td>";
+                echo "<td>{$last_name}</td>";
                 echo "<td>{$gender}</td>";
                 echo "<td>{$dateofbirth}</td>";
+                echo "<td>{$registration_date}</td>";
                 echo "<td>";
                 // read one record
                 echo "<a href='read_one.php?id={$username}' class='btn btn-info m-r-1em'>Read</a>";
 
                 // we will use this links on next part of this post
-                echo "<a href='update.php?id={$username}' class='btn btn-primary m-r-1em'>Edit</a>";
+                echo "<a href='customer_update.php?username={$username}' class='btn btn-primary m-r-1em'>Edit</a>";
 
                 // we will use this links on next part of this post
                 echo "<a href='#' onclick='delete_user({$username});'  class='btn btn-danger'>Delete</a>";

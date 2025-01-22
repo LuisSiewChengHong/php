@@ -16,7 +16,7 @@ include 'validation.php';
     <!-- container -->
     <div class="container">
         <div class="page-header">
-            <h1>Read customer</h1>
+            <h1>Read Customer Details</h1>
         </div>
 
         <!-- PHP read one record will be here -->
@@ -31,11 +31,11 @@ include 'validation.php';
         // read current record's data
         try {
             // prepare select query
-            $query = "SELECT id, username, firstname, lastname,gender,date_of_birth, registration_date ,account_status FROM customer WHERE id = ? LIMIT 0,1";
+            $query = "SELECT username, password, first_name, last_name, gender, dateofbirth, registration_date, stat FROM customer WHERE id = ? LIMIT 0,1";
             $stmt = $con->prepare($query);
 
             // this refer to the first question mark
-            $stmt->bindParam(1, $id);
+            $stmt->bindParam(1, $username);
 
             // execute our query
             $stmt->execute();
@@ -44,13 +44,13 @@ include 'validation.php';
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             // values to fill up our form
-            $name = $row['username'];
-            $firstname = $row['firstname'];
-            $lastname = $row['lastname'];
+            $username = $row['username'];
+            $firstname = $row['first_name'];
+            $lastname = $row['last_name'];
             $gender = $row['gender'];
-            $date_of_birth = $row['date_of_birth'];
-            $registration = $row['registration_date'];
-            $account_status = $row['account_status'];
+            $dateofbirth = $row['dateofbirth'];
+            $registration_date = $row['registration_date'];
+            $stat = $row['stat'];
         }
         // show error
         catch (PDOException $exception) {
@@ -66,15 +66,15 @@ include 'validation.php';
         <table class='table table-hover table-responsive table-bordered'>
             <tr>
                 <td>username</td>
-                <td><?php echo $name; ?></td>
+                <td><?php echo $username; ?></td>
             </tr>
             <tr>
                 <td>firstname</td>
-                <td><?php echo $firstname; ?></td>
+                <td><?php echo $first_name; ?></td>
             </tr>
             <tr>
                 <td>lastname</td>
-                <td><?php echo $lastname; ?></td>
+                <td><?php echo $last_name; ?></td>
             </tr>
             <tr>
                 <td>gender</td>
@@ -82,20 +82,20 @@ include 'validation.php';
             </tr>
             <tr>
                 <td>date_of_birth</td>
-                <td><?php echo $date_of_birth; ?></td>
+                <td><?php echo $dateofbirth; ?></td>
             </tr>
             <tr>
                 <td>registration</td>
-                <td><?php echo $registration; ?></td>
+                <td><?php echo $registration_date; ?></td>
             </tr>
             <tr>
                 <td>account_status</td>
-                <td><?php echo $account_status; ?></td>
+                <td><?php echo $stat; ?></td>
             </tr>
             <tr>
                 <td></td>
                 <td>
-                    <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                    <a href='customer_listing.php' class='btn btn-danger'>Back to read Customers</a>
                 </td>
             </tr>
         </table>

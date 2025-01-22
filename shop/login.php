@@ -19,7 +19,7 @@ if ($_POST) {
     if (empty($errors)) {
 
         try {
-            $query = "SELECT username, password, stat FROM customer
+            $query = "SELECT username, first_name, last_name, password, registration_date, stat FROM customer
             WHERE username = ? LIMIT 1";
             $stmt = $con->prepare($query);
             $stmt->bindParam(1, $username);
@@ -33,8 +33,6 @@ if ($_POST) {
                 echo $status . "m";
                 if ($password == $stored_password) {
                     if ($status == 1) {
-                        $_SESSION['user_id'] = 1;
-                        $_SESSION['username'] = $username;
                         $_SESSION['is_logged_in'] = true;
                         header("location: product_details.php");
                     } else {

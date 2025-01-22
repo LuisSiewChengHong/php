@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jan 22, 2025 at 04:51 AM
+-- Generation Time: Jan 22, 2025 at 05:38 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `created` datetime NOT NULL,
   `modified` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `products`
@@ -71,7 +71,10 @@ CREATE TABLE IF NOT EXISTS `products` (
 
 INSERT INTO `products` (`id`, `name`, `description`, `product_cat`, `price`, `manufacture_date`, `expired_date`, `created`, `modified`) VALUES
 (1, 'RTX 5070', 'Graphic Card', 3, 500, '2025-01-01 00:00:00', '2025-01-19 00:00:00', '2025-01-15 08:41:29', '0000-00-00 00:00:00'),
-(7, 'Sofa', 'A comfy seat to be sat on.', 1, 400, '2025-01-02 00:00:00', '2025-01-08 00:00:00', '2025-01-15 09:33:52', '0000-00-00 00:00:00');
+(7, 'Sofa', 'A comfy seat to be sat on.', 5, 400, '2025-01-02 00:00:00', '2025-01-08 00:00:00', '2025-01-15 09:33:52', '2025-01-22 05:25:21'),
+(8, 'Baseball', 'Oriented with balls.', 1, 50, '2025-01-01 00:00:00', '2025-01-22 00:00:00', '2025-01-22 05:22:49', '0000-00-00 00:00:00'),
+(9, 'Google', 'One of the world\'s biggest search engines.', 4, 1000000000000, '2000-01-08 00:00:00', '2025-01-22 00:00:00', '2025-01-22 05:24:11', '0000-00-00 00:00:00'),
+(10, 'Fox', 'Coolest Minecraft species.', 2, 2, '2025-01-01 00:00:00', '2025-01-22 00:00:00', '2025-01-22 05:26:10', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 

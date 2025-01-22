@@ -31,8 +31,8 @@ include 'validation.php';
                 // posted values
                 $username = $_POST['username'];
                 $password = $_POST['password'];
-                $firstname = $_POST['firstname'];
-                $lastname = $_POST['lastname'];
+                $first_name = $_POST['first_name'];
+                $last_name = $_POST['last_name'];
                 $gender = $_POST['gender'];
                 $dateofbirth = $_POST['dateofbirth'];
 
@@ -46,10 +46,10 @@ include 'validation.php';
                 if (empty($password)) {
                     $errors[] = "Password is required.";
                 }
-                if (empty($firstname)) {
+                if (empty($first_name)) {
                     $errors[] = "First Name is required.";
                 }
-                if (empty($lastname)) {
+                if (empty($last_name)) {
                     $errors[] = "Last Name is required.";
                 }
                 if (empty($gender)) {
@@ -70,7 +70,7 @@ include 'validation.php';
 
 
                     // insert query
-                    $query = "INSERT INTO cus SET username=:username, password=:password, firstname=:firstname, lastname=:lastname, gender=:gender, dateofbirth=:dateofbirth";
+                    $query = "INSERT INTO customer SET username=:username, password=:password, first_name=:first_name, last_name=:last_name, gender=:gender, dateofbirth=:dateofbirth";
 
                     // prepare query for execution
                     $stmt = $con->prepare($query);
@@ -78,14 +78,14 @@ include 'validation.php';
                     //bind the parameters
                     $stmt->bindParam(':username', $username);
                     $stmt->bindParam(':password', $password);
-                    $stmt->bindParam(':firstname', $firstname);
-                    $stmt->bindParam(':lastname', $lastname);
+                    $stmt->bindParam(':first_name', $first_name);
+                    $stmt->bindParam(':last_name', $last_name);
                     $stmt->bindParam(':gender', $gender);
                     $stmt->bindParam(':dateofbirth', $dateofbirth);
 
                     // Execute the query
                     if ($stmt->execute()) {
-                        echo "<div class='alert alert-success'>Product was added.</div>";
+                        echo "<div class='alert alert-success'>Customer was created.</div>";
                     } else {
                         echo "<div class='alert alert-danger'>Unable to save record.</div>";
                     }
@@ -112,11 +112,11 @@ include 'validation.php';
                 </tr>
                 <tr>
                     <td>First Name</td>
-                    <td><input type='text' name='firstname' class='form-control' /></td>
+                    <td><input type='text' name='first_name' class='form-control' /></td>
                 </tr>
                 <tr>
                     <td>Last Name</td>
-                    <td><input type='text' name='lastname' class='form-control' /></td>
+                    <td><input type='text' name='last_name' class='form-control' /></td>
                 </tr>
                 <tr>
                     <td>Gender</td>
@@ -136,7 +136,7 @@ include 'validation.php';
                     <td></td>
                     <td>
                         <input type='submit' value='Save' class='btn btn-primary' />
-                        <a href='index.php' class='btn btn-danger'>Back to read products</a>
+                        <a href='customer_listing.php' class='btn btn-danger'>Back to read Customers</a>
                     </td>
                 </tr>
             </table>
