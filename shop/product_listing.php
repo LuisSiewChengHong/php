@@ -22,21 +22,46 @@ include 'validation.php';
         // include database connection
         include 'config/database.php';
 
-        // delete message prompt will be here
-        
-        // select all data
-        
-
         $query = "SELECT id, name, description, price, product_cat_name, created, modified, manufacture_date, expired_date FROM products
         INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id ORDER BY id ASC";
         $stmt = $con->prepare($query);
         $stmt->execute();
 
+        if ($_POST) {
+            $name = $_POST['name'];
+
+            $query = "SELECT id, name, description, price, product_cat_name, created, modified, manufacture_date, expired_date FROM products
+        INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id WHERE `name` LIKE '" . $_POST['name'] . "' ORDER BY id ASC";
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+        }
+        if ($_POST) {
+            $name = $_POST['name'];
+
+            $query = "SELECT id, name, description, price, product_cat_name, created, modified, manufacture_date, expired_date FROM products
+        INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id WHERE product_cat_name LIKE '" . $_POST['name'] . "' ORDER BY id ASC";
+            $stmt = $con->prepare($query);
+            $stmt->execute();
+        }
+
+
+        // delete message prompt will be herecat = product_cat.product
+        
+        // select all data
+        
         // this is how to get number of rows returned
         $num = $stmt->rowCount();
 
         // link to create record form
         echo "<a href='product_create.php' class='btn btn-primary m-b-1em'>Create New Product</a>";
+        ?>
+
+        <form action='<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>' class="d-flex" role="search" method="post">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="name">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+
+        <?php
 
         //check if more than 0 record found
         if ($num > 0) {

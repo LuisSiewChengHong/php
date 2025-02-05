@@ -34,7 +34,7 @@ if ($_POST) {
                 if ($password == $stored_password) {
                     if ($status == 1) {
                         $_SESSION['is_logged_in'] = true;
-                        header("location: product_details.php");
+                        header("location: product_listing.php");
                     } else {
                         echo "<p style='color:orange;'>Your account is inactive. Please contact support.</p>";
                     }
