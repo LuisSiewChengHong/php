@@ -3,128 +3,142 @@
 <?php
 include 'menu.php';
 include 'validation.php';
+include 'config/database.php';
 ?>
 
 <head>
-    <title>PDO - Create a Record - PHP CRUD Tutorial</title>
+    <title>Product Listings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
-    <!-- container -->
     <div class="container">
         <div class="page-header">
             <h1>Product Listings</h1>
         </div>
 
-        <?php
-        // include database connection
-        include 'config/database.php';
+        <a href='product_create.php' class='btn btn-primary m-b-1em'>Create New Product</a>
 
-        $query = "SELECT id, name, description, price, product_cat_name, created, modified, manufacture_date, expired_date FROM products
-        INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id ORDER BY id ASC";
-        $stmt = $con->prepare($query);
-        $stmt->execute();
+        <form action="" class="d-flex my-3" role="search" method="get">
+            <input class="form-control me-2" type="text" placeholder="Search Product" name="search"
+                value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
 
-        if ($_POST) {
-            $name = $_POST['name'];
+            <select class="form-select me-2" name="category">
+                <option value="">All Categories</option>
+                <?php
+                $catQuery = "SELECT product_cat_id, product_cat_name FROM product_cat";
+                $catStmt = $con->prepare($catQuery);
+                $catStmt->execute();
+                while ($catRow = $catStmt->fetch(PDO::FETCH_ASSOC)) {
+                    $selected = isset($_GET['category']) && $_GET['category'] == $catRow['product_cat_id'] ? 'selected' : '';
+                    echo "<option value='{$catRow['product_cat_id']}' {$selected}>{$catRow['product_cat_name']}</option>";
+                }
+                ?>
+            </select>
 
-            $query = "SELECT id, name, description, price, product_cat_name, created, modified, manufacture_date, expired_date FROM products
-        INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id WHERE `name` LIKE '" . $_POST['name'] . "' ORDER BY id ASC";
-            $stmt = $con->prepare($query);
-            $stmt->execute();
-        }
-        if ($_POST) {
-            $name = $_POST['name'];
+            <select class="form-select me-2" name="sort">
+                <option value="ASC" <?= (isset($_GET['sort']) && $_GET['sort'] == 'ASC') ? 'selected' : '' ?>>Sort A-Z
+                </option>
+                <option value="DESC" <?= (isset($_GET['sort']) && $_GET['sort'] == 'DESC') ? 'selected' : '' ?>>Sort Z-A
+                </option>
+            </select>
 
-            $query = "SELECT id, name, description, price, product_cat_name, created, modified, manufacture_date, expired_date FROM products
-        INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id WHERE product_cat_name LIKE '" . $_POST['name'] . "' ORDER BY id ASC";
-            $stmt = $con->prepare($query);
-            $stmt->execute();
-        }
-
-
-        // delete message prompt will be herecat = product_cat.product
-        
-        // select all data
-        
-        // this is how to get number of rows returned
-        $num = $stmt->rowCount();
-
-        // link to create record form
-        echo "<a href='product_create.php' class='btn btn-primary m-b-1em'>Create New Product</a>";
-        ?>
-
-        <form action='<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>' class="d-flex" role="search" method="post">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="name">
-            <button class="btn btn-outline-success" type="submit">Search</button>
+            <button class="btn btn-outline-success" type="submit">Filter</button>
         </form>
 
         <?php
+        $query = "SELECT products.id, products.name, products.description, products.price, product_cat.product_cat_name, products.manufacture_date, products.expired_date 
+                  FROM products
+                  INNER JOIN product_cat ON products.product_cat = product_cat.product_cat_id 
+                  WHERE 1 ";
 
-        //check if more than 0 record found
-        if ($num > 0) {
-
-            echo "<table class='table table-hover table-responsive table-bordered'>";//start table
-        
-            //creating our table heading
-            echo "<tr>";
-            echo "<th>ID</th>";
-            echo "<th>Name</th>";
-            echo "<th>Description</th>";
-            echo "<th>Category";
-            echo "<th>Price</th>";
-            echo "<th>Manufacture Date</th>";
-            echo "<th>Expiratory Date</th>";
-            echo "</tr>";
-
-            // retrieve our table contents
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                // extract row
-                // this will make $row['firstname'] to just $firstname only
-                extract($row);
-                // creating new table row per record
-                echo "<tr>";
-                echo "<td>{$id}</td>";
-                echo "<td>{$name}</td>";
-                echo "<td>{$description}</td>";
-                echo "<td>{$product_cat_name}</td>";
-                echo "<td>{$price}</td>";
-                echo "<td>{$manufacture_date}</td>";
-                echo "<td>{$expired_date}</td>";
-                echo "<td>";
-                // read one record
-                echo "<a href='product_details.php?id={$id}' class='btn btn-info m-r-1em'>Read</a>";
-
-                // we will use this links on next part of this post
-                echo "<a href='product_update.php?id={$id}' class='btn btn-primary m-r-1em'>Edit</a>";
-
-                // we will use this links on next part of this post
-                echo "<a href='#' onclick='delete_user({$id});'  class='btn btn-danger'>Delete</a>";
-                echo "</td>";
-                echo "</tr>";
-            }
-
-
-            // end table
-            echo "</table>";
-
-
-
+        if (!empty($_GET['search'])) {
+            $search = "%{$_GET['search']}%";
+            $query .= " AND (products.name LIKE :search OR product_cat.product_cat_name LIKE :search) ";
         }
-        // if no records found
-        else {
-            echo "<div class='alert alert-danger'>No records found.</div>";
+
+        if (!empty($_GET['category'])) {
+            $query .= " AND products.product_cat = :category ";
         }
+
+        $sortOrder = isset($_GET['sort']) && ($_GET['sort'] === 'DESC') ? 'DESC' : 'ASC';
+        $query .= " ORDER BY products.name $sortOrder";
+
+        $stmt = $con->prepare($query);
+
+        if (!empty($_GET['search'])) {
+            $stmt->bindParam(':search', $search);
+        }
+
+        if (!empty($_GET['category'])) {
+            $stmt->bindParam(':category', $_GET['category']);
+        }
+
+        $stmt->execute();
+        $num = $stmt->rowCount();
+
+        $countQuery = "SELECT product_cat.product_cat_name, COUNT(products.id) AS product_count 
+                       FROM product_cat 
+                       LEFT JOIN products ON product_cat.product_cat_id = products.product_cat 
+                       GROUP BY product_cat.product_cat_name";
+        $countStmt = $con->prepare($countQuery);
+        $countStmt->execute();
         ?>
 
+        <div class="mb-3">
+            <h5>Product Count by Category</h5>
+            <ul class="list-group">
+                <?php while ($countRow = $countStmt->fetch(PDO::FETCH_ASSOC)): ?>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <?= htmlspecialchars($countRow['product_cat_name']) ?>
+                        <span class="badge bg-primary rounded-pill"><?= $countRow['product_count'] ?></span>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        </div>
 
+        <?php if ($num > 0): ?>
+            <table class='table table-hover table-responsive table-bordered'>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Manufacture Date</th>
+                    <th>Expiry Date</th>
+                    <th>Actions</th>
+                </tr>
+                <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($row['id']) ?></td>
+                        <td><?= htmlspecialchars($row['name']) ?></td>
+                        <td><?= htmlspecialchars($row['description']) ?></td>
+                        <td><?= htmlspecialchars($row['product_cat_name']) ?></td>
+                        <td><?= htmlspecialchars($row['price']) ?></td>
+                        <td><?= htmlspecialchars($row['manufacture_date']) ?></td>
+                        <td><?= htmlspecialchars($row['expired_date']) ?></td>
+                        <td>
+                            <a href='product_details.php?id=<?= $row['id'] ?>' class='btn btn-info'>Read</a>
+                            <a href='product_update.php?id=<?= $row['id'] ?>' class='btn btn-primary'>Edit</a>
+                            <a href='#' onclick='delete_product(<?= $row['id'] ?>);' class='btn btn-danger'>Delete</a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </table>
+        <?php else: ?>
+            <div class='alert alert-danger'>No records found.</div>
+        <?php endif; ?>
+    </div>
 
-    </div> <!-- end .container -->
-
-    <!-- confirm delete record will be here -->
-
+    <script>
+        function delete_product(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                window.location = 'product_delete.php?id=' + id;
+            }
+        }
+    </script>
 </body>
 
 </html>

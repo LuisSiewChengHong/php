@@ -3,100 +3,99 @@
 <?php
 include 'menu.php';
 include 'validation.php';
+include 'config/database.php';
 ?>
 
 <head>
-    <title>PDO - Create a Record - PHP CRUD Tutorial</title>
+    <title>Customer Listings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
-    <!-- container -->
     <div class="container">
         <div class="page-header">
-            <h1>Read Customer Listing</h1>
+            <h1>Customer Listings</h1>
         </div>
 
+        <a href='customer_create.php' class='btn btn-primary m-b-1em'>Create New Customer</a>
+
+        <form action="" class="d-flex my-3" method="get">
+            <input class="form-control me-2" type="text" placeholder="Search by Username, First Name, or Last Name"
+                name="search" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+
+            <select class="form-select me-2" name="sort_by">
+                <option value="username" <?= (isset($_GET['sort_by']) && $_GET['sort_by'] == 'username') ? 'selected' : '' ?>>Sort by Username</option>
+                <option value="first_name" <?= (isset($_GET['sort_by']) && $_GET['sort_by'] == 'first_name') ? 'selected' : '' ?>>Sort by First Name</option>
+                <option value="last_name" <?= (isset($_GET['sort_by']) && $_GET['sort_by'] == 'last_name') ? 'selected' : '' ?>>Sort by Last Name</option>
+            </select>
+
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+
         <?php
-        // include database connection
-        include 'config/database.php';
+        $query = "SELECT username, password, first_name, last_name, gender, dateofbirth, registration_date, stat FROM customer WHERE 1";
 
-        // delete message prompt will be here
-        
-        // select all data
-        $query = "SELECT username, password, first_name, last_name, gender, dateofbirth, registration_date, stat FROM customer ORDER BY username DESC";
+        if (!empty($_GET['search'])) {
+            $search = "%" . $_GET['search'] . "%";
+            $query .= " AND (username LIKE :search OR first_name LIKE :search OR last_name LIKE :search)";
+        }
+
+        $sortBy = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'username';
+        $query .= " ORDER BY $sortBy ASC";
+
         $stmt = $con->prepare($query);
+
+        if (!empty($_GET['search'])) {
+            $stmt->bindParam(':search', $search);
+        }
+
         $stmt->execute();
-
-        // this is how to get number of rows returned
         $num = $stmt->rowCount();
-
-        // link to create record form
-        echo "<a href='customer_create.php' class='btn btn-primary m-b-1em'>Create New Product</a>";
-
-        //check if more than 0 record found
-        if ($num > 0) {
-
-            echo "<table class='table table-hover table-responsive table-bordered'>";//start table
-        
-            //creating our table heading
-            echo "<tr>";
-            echo "<th>Username</th>";
-            echo "<th>Password</th>";
-            echo "<th>First Name</th>";
-            echo "<th>Last Name</th>";
-            echo "<th>Gender</th>";
-            echo "<th>Date Of Birth</th>";
-            echo "<th>Registration Date/Time</th>";
-            echo "</tr>";
-
-            // retrieve our table contents
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                // extract row
-                // this will make $row['firstname'] to just $firstname only
-                extract($row);
-                // creating new table row per record
-                echo "<tr>";
-                echo "<td>{$username}</td>";
-                echo "<td>{$password}</td>";
-                echo "<td>{$first_name}</td>";
-                echo "<td>{$last_name}</td>";
-                echo "<td>{$gender}</td>";
-                echo "<td>{$dateofbirth}</td>";
-                echo "<td>{$registration_date}</td>";
-                echo "<td>";
-                // read one record
-                echo "<a href='read_one.php?id={$username}' class='btn btn-info m-r-1em'>Read</a>";
-
-                // we will use this links on next part of this post
-                echo "<a href='customer_update.php?username={$username}' class='btn btn-primary m-r-1em'>Edit</a>";
-
-                // we will use this links on next part of this post
-                echo "<a href='#' onclick='delete_user({$username});'  class='btn btn-danger'>Delete</a>";
-                echo "</td>";
-                echo "</tr>";
-            }
-
-
-            // end table
-            echo "</table>";
-
-
-
-        }
-        // if no records found
-        else {
-            echo "<div class='alert alert-danger'>No records found.</div>";
-        }
         ?>
 
 
+        <?php if ($num > 0): ?>
+            <table class='table table-hover table-responsive table-bordered'>
+                <tr>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Gender</th>
+                    <th>Date of Birth</th>
+                    <th>Registration Date</th>
+                    <th>Actions</th>
+                </tr>
+                <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($row['username']) ?></td>
+                        <td><?= htmlspecialchars($row['password']) ?></td>
+                        <td><?= htmlspecialchars($row['first_name']) ?></td>
+                        <td><?= htmlspecialchars($row['last_name']) ?></td>
+                        <td><?= htmlspecialchars($row['gender']) ?></td>
+                        <td><?= htmlspecialchars($row['dateofbirth']) ?></td>
+                        <td><?= htmlspecialchars($row['registration_date']) ?></td>
+                        <td>
+                            <a href='read_one.php?id=<?= $row['username'] ?>' class='btn btn-info'>Read</a>
+                            <a href='customer_update.php?username=<?= $row['username'] ?>' class='btn btn-primary'>Edit</a>
+                            <a href='#' onclick='delete_customer("<?= $row['username'] ?>");' class='btn btn-danger'>Delete</a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </table>
+        <?php else: ?>
+            <div class='alert alert-danger'>No customers found.</div>
+        <?php endif; ?>
+    </div>
 
-    </div> <!-- end .container -->
-
-    <!-- confirm delete record will be here -->
-
+    <script>
+        function delete_customer(username) {
+            if (confirm('Are you sure you want to delete this customer?')) {
+                window.location = 'customer_delete.php?username=' + username;
+            }
+        }
+    </script>
 </body>
 
 </html>
